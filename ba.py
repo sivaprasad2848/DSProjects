@@ -1,0 +1,39 @@
+import pandas as pd
+import numpy as np
+df=pd.read_csv("./dataset.csv") #this will convert csv to dataframes
+
+
+# Fill missing Category with 'Unknown'
+df['Category'] = df['Category'].fillna('Unknown')
+
+# Fill missing Quantity with the median quantity value
+df['Quantity'] = df['Quantity'].fillna(df['Quantity'].median())
+
+# Ensure Date is recognized as a datetime data type
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Calculate Total Spend per transaction
+df['Total_Revenue'] = df['Quantity'] * df['Price_Per_Unit']
+
+# Extract day of the week
+df['Day_of_Week'] = df['Date'].dt.day_name()
+
+# Ensure Date is recognized as a datetime data type
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Calculate Total Spend per transaction
+df['Total_Revenue'] = df['Quantity'] * df['Price_Per_Unit']
+
+# Extract day of the week
+df['Day_of_Week'] = df['Date'].dt.day_name()
+
+# Question 1: Which category generated the most revenue?
+category_summary = df.groupby('Category').agg(
+    Total_Sales=('Total_Revenue', 'sum'),
+    Items_Sold=('Quantity', 'sum'),
+    Avg_Rating=('Customer_Rating', 'mean')
+).reset_index()
+
+print(category_summary.sort_values(by='Total_Sales', ascending=False))
+
+
